@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Google AI Studio App</title>
+    <script>
+      // Apply sandboxed window.fetch setter compatibility shim as early as possible
+      try {
+        if (typeof window !== 'undefined' && 'fetch' in window) {
+          const originalFetch = window.fetch;
+          let currentFetch = originalFetch;
+          try {
+            Object.defineProperty(window, 'fetch', {
+              configurable: true,
+              enumerable: true,
+              get() {
+                return currentFetch;
+              },
+              set(val) {
+                currentFetch = val;
+              }
+            });
+          } catch (e) {
+            // Fallback to Window.prototype definition in case window itself is locked
+            if (typeof Window !== 'undefined' && Window.prototype) {
+              Object.defineProperty(Window.prototype, 'fetch', {
+                configurable: true,
+                enumerable: true,
+                get() {
+                  return currentFetch;
+                },
+                set(val) {
+                  currentFetch = val;
+                }
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Early fetch shim failed:', err);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
